@@ -16,3 +16,17 @@ gem "lita-resistance"
 ## Usage
 
 `lita resistance [users]` - Assigns the roles of spy/resistance to users you mention.
+
+### Example
+
+`lita resistance @player1 @player2 @player3 @player4 @player5`
+
+You don't need to include the `@` symbol:
+
+`lita resistance player1 player2 player3 player4 player5`
+
+You can also do a combination of both:
+
+`lita resistance @player1 @player2 player3 player4 player5`
+
+[![forthebadge](http://forthebadge.com/images/badges/built-with-love.svg)](http://forthebadge.com)
