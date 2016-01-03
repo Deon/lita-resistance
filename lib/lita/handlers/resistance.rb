@@ -45,7 +45,15 @@ module Lita
 
         spies.each do |member|
           user = Lita::User.find_by_mention_name(member)
-          robot.send_message(Source.new(user: user),"@#{response.user.mention_name} has started game ID ##{gameId} of Resistance. You are a member of the spies.")
+          current_user = Source.new(user: user)
+          robot.send_message(current_user,"@#{response.user.mention_name} has started game ID ##{gameId} of Resistance. You are a member of the spies.")
+          other_spies = spies.dup
+          other_spies.delete_at(other_spies.find_index(member))
+          if other_spies.length > 1
+            robot.send_message(current_user, "The other spies are: @#{other_spies.join(' @')}")
+          else
+            robot.send_message(current_user, "The other spy is: @#{other_spies[0]}")
+          end
         end
 
         resistance.each do |member|
