@@ -3,7 +3,6 @@ module Lita
     class Resistance < Handler
 
       route(/resistance .+/, :play, command: true, help: {'resistance [users]' => 'Starts a game of resistance with the people you mention.'})
-
       def play(response)
         all_users = response.args.uniq
 
@@ -37,22 +36,24 @@ module Lita
             response.reply(user)
           end and return
         end
-        
+
+        gameId = rand(999999)
+
         # Form teams
         spies = all_users.sample((all_users.length+2)/3)
         resistance = all_users - spies
 
         spies.each do |member|
           user = Lita::User.find_by_mention_name(member)
-          robot.send_message(Source.new(user: user), 'You are a member of the spies.')
+          robot.send_message(Source.new(user: user),"@#{response.user.mention_name} has started game ID##{gameId} of Resistance. You are a member of the spies.")
         end
 
         resistance.each do |member|
           user = Lita::User.find_by_mention_name(member)
-          robot.send_message(Source.new(user: user), 'You are a member of the resistance.')
+          robot.send_message(Source.new(user: user), "@#{response.user.mention_name} has started game ID##{gameId} of Resistance. You are a member of the resistance.")
         end
 
-        response.reply('Roles have been assigned to the selected people!')
+        response.reply("Roles have been assigned to the selected people! This is game ID##{gameId}")
       end
       
       Lita.register_handler(self)
