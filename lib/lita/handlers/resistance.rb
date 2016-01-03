@@ -45,15 +45,15 @@ module Lita
 
         spies.each do |member|
           user = Lita::User.find_by_mention_name(member)
-          robot.send_message(Source.new(user: user),"@#{response.user.mention_name} has started game ID##{gameId} of Resistance. You are a member of the spies.")
+          robot.send_message(Source.new(user: user),"@#{response.user.mention_name} has started game ID ##{gameId} of Resistance. You are a member of the spies.")
         end
 
         resistance.each do |member|
           user = Lita::User.find_by_mention_name(member)
-          robot.send_message(Source.new(user: user), "@#{response.user.mention_name} has started game ID##{gameId} of Resistance. You are a member of the resistance.")
+          robot.send_message(Source.new(user: user), "@#{response.user.mention_name} has started game ID ##{gameId} of Resistance. You are a member of the resistance.")
         end
 
-        response.reply("Roles have been assigned to the selected people! This is game ID##{gameId}")
+        response.reply("Roles have been assigned to the selected people! This is game ID ##{gameId}")
       end
       
       Lita.register_handler(self)
