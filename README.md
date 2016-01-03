@@ -17,7 +17,7 @@ gem "lita-resistance"
 
 `lita resistance [users]` - Assigns the roles of spy/resistance to users you mention.
 
-### Example
+### Examples
 
 `lita resistance @player1 @player2 @player3 @player4 @player5`
 
