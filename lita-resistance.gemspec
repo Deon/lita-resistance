@@ -1,8 +1,8 @@
 Gem::Specification.new do |spec|
   spec.name          = "lita-resistance"
-  spec.version       = "0.1.0"
-  spec.authors       = ["Deon Hua"]
-  spec.email         = ["deonhbci@gmail.com"]
+  spec.version       = "0.2.0"
+  spec.authors       = ["Deon Hua", "Yu Chen Hou"]
+  spec.email         = ["deonhbci@gmail.com", "me@yuchen.io"]
   spec.description   = "Plays a game of resistance by assigning roles to users you mention in chat."
   spec.summary       = "Plays a game of resistance by assigning roles to users you mention in chat."
   spec.homepage      = "http://github.com/DeonHua/lita-resistance"
