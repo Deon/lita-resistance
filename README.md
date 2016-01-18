@@ -2,6 +2,8 @@
 
 [![Build Status](https://travis-ci.org/DeonHua/lita-resistance.svg?branch=master)](https://travis-ci.org/DeonHua/lita-resistance)
 [![Gem Version](https://badge.fury.io/rb/lita-resistance.svg)](https://badge.fury.io/rb/lita-resistance)
+[![Coverage Status](https://coveralls.io/repos/DeonHua/lita-resistance/badge.svg?branch=master&service=github)](https://coveralls.io/github/DeonHua/lita-resistance?branch=master)
+[![Code Climate](https://codeclimate.com/github/DeonHua/lita-resistance/badges/gpa.svg)](https://codeclimate.com/github/DeonHua/lita-resistance)
 
 Plays a game of resistance by assigning roles to users you mention in chat.
 
