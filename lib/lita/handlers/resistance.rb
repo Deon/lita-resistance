@@ -3,25 +3,24 @@ module Lita
     class Resistance < Handler
 
       route(/resistance .+/, :play, command: true, help: {'resistance [users]' => 'Starts a game of resistance with the people you mention.'})
+
       def play(response)
         all_users = response.args.uniq
 
         if all_users.length < 5
-          response.reply('You need at least 5 players for Resistance.')
-          return
+          response.reply('You need at least 5 players for Resistance.') and return
         elsif all_users.length > 10
-          response.reply('You cannot play a game of Resistance with more than 10 players.')
-          return
+          response.reply('You cannot play a game of Resistance with more than 10 players.') and return
         end
 
         # Remove any "@" from usernames
-        all_users.map! {|username|
+        all_users.map! do |username|
           if username[0] == '@'
-            username = username[1, username.length-1]
+            username[1, username.length-1]
           else
-            username = username
+            username
           end
-        }
+        end
 
         # Ensure all people are users.
         unknown_users = []
@@ -61,10 +60,10 @@ module Lita
           robot.send_message(Source.new(user: user), "@#{response.user.mention_name} has started game ID ##{gameId} of Resistance. You are a member of the resistance.")
         end
 
-        leader = all_users.sample(1)[0] # Randomly pick a leader for the first round 
+        leader = all_users.sample(1)[0] # Randomly pick a leader for the first round
         response.reply("Roles have been assigned to the selected people! This is game ID ##{gameId}. @#{leader} will be leading off the first round.")
       end
-      
+
       Lita.register_handler(self)
     end
   end
