@@ -60,5 +60,17 @@ describe Lita::Handlers::Resistance, lita_handler: true do
       send_command('resistance ADF a b c d @e')
       expect(replies.last).to eq('You cannot have more special characters on spies than the number of spies.')
     end
+
+    it 'should start a game with 5 players' do
+      send_command('resistance BCDF a b c d @e')
+      expect(replies.last).to include('Roles have been assigned to the selected people!')
+    end
+
+    it 'should start a game with 7 players' do
+      f = Lita::User.create(6, {name: 'f', mention_name: 'f'})
+      g = Lita::User.create(7, {name: 'g', mention_name: 'g'})
+      send_command('resistance BCDFS a b c d e f g')
+      expect(replies.last).to include('Roles have been assigned to the selected people!')
+    end
   end
 end
