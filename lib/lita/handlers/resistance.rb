@@ -2,18 +2,17 @@ module Lita
   module Handlers
     class Resistance < Handler
 
-      route(/resistance .+/, :play, command: true, help: {'resistance [users]' => 'Starts a game of resistance with the people you mention.'})
+      route(/resistance help/, :help, command: true, help: {'resistance help' => 'Provides detailed help with Resistance commands.'})
 
-      def play(response)
-        all_users = response.args.uniq
+      # route(/resistance [NCBSAFD]+ .+/, :play, command: true, help: {'resistance N|[CBSAFD] [users]' => 'Starts a game of resistance with the people you mention.'})
+      route(/resistance .+/, :play, command: true, help: {'resistance N|[CBSAFD] [users]' => 'Starts a game of resistance with the people you mention.'})
 
-        if all_users.length < 5
-          response.reply('You need at least 5 players for Resistance.') and return
-        elsif all_users.length > 10
-          response.reply('You cannot play a game of Resistance with more than 10 players.') and return
-        end
+      def help (response)
+        response.reply(render_template("help"))
+      end
 
-        # Remove any "@" from usernames
+      # Remove any "@" from usernames
+      def normalize_input! (all_users)
         all_users.map! do |username|
           if username[0] == '@'
             username[1, username.length-1]
@@ -21,6 +20,40 @@ module Lita
             username
           end
         end
+      end
+
+      def verify_characters (characters)
+        characters = characters.split(//)
+        if characters != characters.uniq
+          raise 'You cannot have more than one of the same character.'
+        end
+
+        if characters.include?('N') && characters.length > 1
+          raise 'You cannot include special characters with N'
+        end
+
+        # Num of Special Characters on spies doesn't exceed num of spies
+        if !characters.include?('N') && (characters - ['C', 'B']).length > @num_spies
+          raise 'You cannot have more special characters on spies than the number of spies.'
+        end
+      end
+
+      def validate_input (response)
+        input_args = response.args.uniq
+        characters = input_args[0]
+        all_users = input_args[1, input_args.length - 1] # User mention_names
+
+        if all_users.length < 5
+          raise 'You need at least 5 players for Resistance.'
+        elsif all_users.length > 10
+          raise 'You cannot play a game of Resistance with more than 10 players.'
+        end
+
+        @num_spies = (all_users.length + 2) / 3
+
+        verify_characters(characters)
+
+        normalize_input!(all_users)
 
         # Ensure all people are users.
         unknown_users = []
@@ -30,16 +63,23 @@ module Lita
         end
 
         if unknown_users.any?
-          response.reply('The following are not users. Please check your spelling and try again.')
-          unknown_users.each do |user|
-            response.reply(user)
-          end and return
+          raise "The following are not users: @#{unknown_users.join(' @')}"
+        end
+
+        all_users
+      end
+
+      def play(response)
+        begin
+          all_users = validate_input(response)
+        rescue StandardError => error
+          response.reply(error.to_s) and return
         end
 
         gameId = rand(999999)
 
         # Form teams
-        spies = all_users.sample((all_users.length+2)/3)
+        spies = all_users.sample(@num_spies)
         resistance = all_users - spies
 
         spies.each do |member|
