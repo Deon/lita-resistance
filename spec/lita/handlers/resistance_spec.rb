@@ -57,7 +57,7 @@ describe Lita::Handlers::Resistance, lita_handler: true do
     end
 
     it 'should not start a game with more special spies than spies' do
-      send_command('resistance BDF a b c d @e')
+      send_command('resistance ADF a b c d @e')
       expect(replies.last).to eq('You cannot have more special characters on spies than the number of spies.')
     end
   end

@@ -23,7 +23,6 @@ module Lita
       end
 
       def verify_characters (characters)
-        characters = characters.split(//)
         if characters != characters.uniq
           raise 'You cannot have more than one of the same character.'
         end
@@ -40,7 +39,7 @@ module Lita
 
       def validate_input (response)
         input_args = response.args.uniq
-        characters = input_args[0]
+        @characters = input_args[0].split(//)
         all_users = input_args[1, input_args.length - 1] # User mention_names
 
         if all_users.length < 5
@@ -51,7 +50,7 @@ module Lita
 
         @num_spies = (all_users.length + 2) / 3
 
-        verify_characters(characters)
+        verify_characters(@characters)
 
         normalize_input!(all_users)
 
@@ -69,6 +68,62 @@ module Lita
         all_users
       end
 
+      def assign_spies (spies)
+        spy_specials = {}
+        if @characters.include?('D')
+          spy_specials[:deep_cover] = spies.sample
+        end
+
+        if @characters.include?('F')
+          spy_specials[:false_commander] = (spies - spy_specials.values).sample
+        end
+
+        if @characters.include?('B')
+          spy_specials[:blind_spy] = (spies - spy_specials.values).sample
+        end
+
+        if @characters.include?('A')
+          spy_specials[:assassin] = (spies - spy_specials.values).sample
+        end
+
+        spies.each do |member|
+          user = Lita::User.find_by_mention_name(member)
+          other_spies = spies.dup - [spy_specials[:blind_spy], member] # Don't mention Blind Spy or self
+          robot.send_message(Source.new(user: user),
+                             render_template('spy', { spy_specials: spy_specials,
+                                                      other_spies: other_spies,
+                                                      member: member,
+                                                      starter: @starter,
+                                                      game_id: @game_id }))
+        end
+        spy_specials
+      end
+
+      def assign_resistance (resistance, spies, spy_specials)
+        if @characters.include?('C')
+          commander = resistance.sample
+          commander_visible = spies - [spy_specials[:deep_cover]]
+        end
+
+        if @characters.include?('B')
+          bodyguard = (resistance - [commander]).sample
+          bodyguard_visible = [commander, spy_specials[:false_commander]].shuffle
+        end
+
+        resistance.each do |member|
+          user = Lita::User.find_by_mention_name(member)
+          robot.send_message(Source.new(user: user),
+                             render_template("resistance", { commander: commander,
+                                                             bodyguard: bodyguard,
+                                                             bodyguard_visible: bodyguard_visible,
+                                                             commander_visible: commander_visible,
+                                                             member: member,
+                                                             starter: @starter,
+                                                             game_id: @game_id }))
+
+        end
+      end
+
       def play(response)
         begin
           all_users = validate_input(response)
@@ -76,32 +131,17 @@ module Lita
           response.reply(error.to_s) and return
         end
 
-        gameId = rand(999999)
-
+        @game_id = rand(999999)
+        @starter = response.user.mention_name # Person who started the game
         # Form teams
         spies = all_users.sample(@num_spies)
         resistance = all_users - spies
 
-        spies.each do |member|
-          user = Lita::User.find_by_mention_name(member)
-          current_user = Source.new(user: user)
-          robot.send_message(current_user,"@#{response.user.mention_name} has started game ID ##{gameId} of Resistance. You are a member of the spies.")
-          other_spies = spies.dup
-          other_spies.delete_at(other_spies.find_index(member))
-          if other_spies.length > 1
-            robot.send_message(current_user, "The other spies are: @#{other_spies.join(' @')}")
-          else
-            robot.send_message(current_user, "The other spy is: @#{other_spies[0]}")
-          end
-        end
+        spy_specials = assign_spies(spies)
+        assign_resistance(resistance, spies, spy_specials)
 
-        resistance.each do |member|
-          user = Lita::User.find_by_mention_name(member)
-          robot.send_message(Source.new(user: user), "@#{response.user.mention_name} has started game ID ##{gameId} of Resistance. You are a member of the resistance.")
-        end
-
-        leader = all_users.sample(1)[0] # Randomly pick a leader for the first round
-        response.reply("Roles have been assigned to the selected people! This is game ID ##{gameId}. @#{leader} will be leading off the first round.")
+        leader = all_users.sample # Randomly pick a leader for the first round
+        response.reply("Roles have been assigned to the selected people! This is game ID ##{@game_id}. @#{leader} will be leading off the first round.")
       end
 
       Lita.register_handler(self)
