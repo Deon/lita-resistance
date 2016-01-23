@@ -4,8 +4,7 @@ module Lita
 
       route(/resistance help/, :help, command: true, help: {'resistance help' => 'Provides detailed help with Resistance commands.'})
 
-      # route(/resistance [NCBSAFD]+ .+/, :play, command: true, help: {'resistance N|[CBSAFD] [users]' => 'Starts a game of resistance with the people you mention.'})
-      route(/resistance .+/, :play, command: true, help: {'resistance N|[CBSAFD] [users]' => 'Starts a game of resistance with the people you mention.'})
+      route(/resistance [NCBSAFD]+ .+/, :play, command: true, help: {'resistance N|[CBSAFD] [users]' => 'Starts a game of resistance with the people you mention.'})
 
       def help (response)
         response.reply(render_template("help"))
@@ -28,7 +27,7 @@ module Lita
         end
 
         if characters.include?('N') && characters.length > 1
-          raise 'You cannot include special characters with N'
+          raise 'You cannot include special characters with N.'
         end
 
         # Num of Special Characters on spies doesn't exceed num of spies

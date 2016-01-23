@@ -1,0 +1,23 @@
+<%= @starter %> has started game ID <%= @game_id %> of Resistance.
+
+<% if @member == @spy_specials[:blind_spy] %>
+You are the Blind Spy.
+<% else %>
+
+  <% if @member == @spy_specials[:deep_cover] %>
+  You are the Deep Cover, a member of the Spies.
+  <% elsif @member == @spy_specials[:false_commander] %>
+  You are the False Commander, a member of the Spies.
+  <% elsif @member == @spy_specials[:assassin] %>
+  You are the Assassin, a member of the Spies.
+  <% else %>
+  You are a regular member of the Spies.
+  <% end %>
+
+  <% if @other_spies.length == 1 %>
+    The other spy is @<%= @other_spies[0] %>.
+  <% else %>
+    The other spies are @<%= @other_spies.join(' @') %>.
+  <% end %>
+
+<% end %>

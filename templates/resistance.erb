@@ -1,0 +1,14 @@
+<%= @starter %> has started game ID <%= @game_id %> of Resistance.
+
+<% if @member == @commander %>
+You are the Commander, a member of the Resistance.
+The spies are: @<%= @commander_visible.join(' @') %>.
+
+<% elsif @member == @bodyguard %>
+You are the bodyguard, a member of the Resistance.
+
+The Commander and False Commander, in random order, are: @<%= @bodyguard_visible.join(' @')%>.
+
+<% else %>
+You are a regular member of the Resistance.
+<% end %>

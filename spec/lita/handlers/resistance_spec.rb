@@ -9,6 +9,13 @@ describe Lita::Handlers::Resistance, lita_handler: true do
     e = Lita::User.create(5, {name: 'e', mention_name: 'e'})
   end
 
+  describe "help" do
+    it "should provide help" do
+      send_command('resistance help')
+      expect(replies.last).to include('Commands:') # First line
+    end
+  end
+
   describe "with no special characters" do
     it 'should not start a game with more than 10 players' do
       f = Lita::User.create(6, {name: 'f', mention_name: 'f'})
@@ -56,6 +63,11 @@ describe Lita::Handlers::Resistance, lita_handler: true do
       expect(replies.last).to eq('You cannot have more than one of the same character.')
     end
 
+    it 'should not start a game with a special character and N' do
+      send_command('resistance NC a b c d @e')
+      expect(replies.last).to eq('You cannot include special characters with N.')
+    end
+
     it 'should not start a game with more special spies than spies' do
       send_command('resistance ADF a b c d @e')
       expect(replies.last).to eq('You cannot have more special characters on spies than the number of spies.')
@@ -69,7 +81,7 @@ describe Lita::Handlers::Resistance, lita_handler: true do
     it 'should start a game with 7 players' do
       f = Lita::User.create(6, {name: 'f', mention_name: 'f'})
       g = Lita::User.create(7, {name: 'g', mention_name: 'g'})
-      send_command('resistance BCDFS a b c d e f g')
+      send_command('resistance ABCFS a b c d e f g')
       expect(replies.last).to include('Roles have been assigned to the selected people!')
     end
   end

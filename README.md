@@ -17,6 +17,8 @@ gem "lita-resistance"
 
 ## Usage
 
+`lita resistance help` - Provides detailed help (this readme file)
+
 `lita resistance N [users]` - Assigns the roles of spy/resistance to users you mention, with no special characters.
 
 `lita resistance [CBSAFD] [users]` - Assigns special characters to the users mentioned, the remainder (if any) will receive 'vanilla' spy/resistance roles. 
