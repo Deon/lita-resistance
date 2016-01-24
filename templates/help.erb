@@ -1,0 +1,26 @@
+Commands:
+`lita resistance help` - Provides detailed help
+
+`lita resistance N [users]` - Assigns the roles of spy/resistance to users you mention, with no special characters.
+
+`lita resistance [CBSAFD] [users]` - Assigns special characters to the users mentioned, the remainder (if any) will receive 'vanilla' spy/resistance roles.
+
+Special Characters:
+Note: The number of special characters chosen for each team must be less than the number of characters on that team.
+
+The number of spies is always (Players + 2)/3 rounded down.
+
+Resistance:
+Commander (C) - Knows all spies except Deep Cover.
+
+Body Guard (B) - Knows Commander and False Commander.
+
+Spies:
+
+Blind Spy (S) - Doesn't know the other spies. The other spies don't know Blind Spy.
+
+Assassin (A) - If Resistance successfully completes 3 missions, Assassin can guess Commander. If Assassin is correct, Spies win.
+
+False Commander (F) - Appears as Commander to Bodyguard.
+
+Deep Cover (D) - Does not appear as spy to Commander. If played with Commander and without Assassin, can take Assassin's role.

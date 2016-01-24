@@ -1,0 +1,24 @@
+
+<%= @starter %> has started game ID #<%= @game_id %> of Resistance.
+
+<% if @member == @commander %>
+You are the Commander, a member of the Resistance.
+
+<% if @spy_specials[:deep_cover].nil? %>
+The spies are: @<%= @commander_visible.join(' @') %>.
+<% else %>
+The spies, excluding Deep Cover, are: @<%= @commander_visible.join(' @') %>.
+<% end %>
+<% elsif @member == @bodyguard %>
+You are the Bodyguard, a member of the Resistance.
+
+<% if !@commander.nil? && !@spy_specials[:false_commander].nil? %>
+  The Commander and False Commander, in random order, are: @<%= @bodyguard_visible.join(' @')%>.
+<% elsif !@commander.nil? && @spy_specials[:false_commander].nil? %>
+  The Commander is @<%= @bodyguard_visible[0] %>
+<% elsif @commander.nil? && !@spy_specials[:false_commander].nil? %>
+  The False Commander is @<%= @bodyguard_visible[0] %>
+<% end %>
+<% else %>
+You are a regular member of the Resistance.
+<% end %>
