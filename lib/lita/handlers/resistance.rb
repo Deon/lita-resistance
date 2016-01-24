@@ -106,7 +106,7 @@ module Lita
 
         if @characters.include?('B')
           bodyguard = (resistance - [commander]).sample
-          bodyguard_visible = [commander, spy_specials[:false_commander]].shuffle
+          bodyguard_visible = [commander, spy_specials[:false_commander]].shuffle.compact
         end
 
         resistance.each do |member|
@@ -118,7 +118,8 @@ module Lita
                                                              commander_visible: commander_visible,
                                                              member: member,
                                                              starter: @starter,
-                                                             game_id: @game_id }))
+                                                             game_id: @game_id,
+                                                             spy_specials: spy_specials }))
 
         end
       end
